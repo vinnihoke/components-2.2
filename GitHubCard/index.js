@@ -3,6 +3,13 @@
            https://api.github.com/users/<your name>
 */
 
+// axios.get('https://api.github.com/users/vinnihoke').then((axiosData) => {
+//   console.log('axiosData.data: ', axiosData.data);
+//   new GitHubUser(axiosData.data)
+// }).catch((err) => {
+//   console.log('error: ', err);
+// })
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,8 +31,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -43,7 +48,6 @@ const followersArray = [];
     <p>Bio: {users bio}</p>
   </div>
 </div>
-
 */
 
 /* List of LS Instructors Github username's: 
@@ -53,3 +57,85 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+
+axios.get('https://api.github.com/users?since=135').then((axiosData) => {
+  console.log('axiosData.data: ', axiosData.data);
+  new GitHubUser(axiosData.data)
+}).catch((err) => {
+  console.log('error: ', err);
+})
+
+const followersArray = [];
+
+class GitHubUser {
+  constructor(ghUsersArray){
+    const entry = document.querySelector('.cards');
+
+    ghUsersArray.forEach((userData) => {
+      this.createUserCard(userData);
+      entry.appendChild(this.createUserCard(userData));
+    });
+  }
+
+  createUserCard(userData) {
+    // Create the card that will be the parent element.
+    const card = document.createElement('div').classList.add('card');
+
+    // Create the image with the image url of user
+    const image = document.createElement('img');
+    image.src = userData.avatar_url;
+    card.appendChild(image);
+
+    // Create the card info container
+    const cardInfoContainer = document.createElement('div').classList.add('card-info');
+
+    // Create an H3.name that outputs in the users name
+    const name = document.createElement('h3').classList.add('name');
+    name.textContent = userData.data.name;
+    cardInfoContainer.appendChild(name);
+
+    // Create a p.username that outputs the username
+    const username = document.createElement('p').classList.add('username');
+    username.textContent = userData.data.login;
+    cardInfoContainer.appendChild(username);
+
+    // Create a p that outputs users location
+    const location = document.createElement('p');
+    location.textContent = userData.data.location;
+    cardInfoContainer.appendChild(location);
+
+    // Create a p>a with href to users profile
+    const profileLink = document.createElement('a');
+    profileLink.setAttribute('href', userData.data.html_url);
+    profileLink.textContent(userData.data.html_url);
+    cardInfoContainer.appendChild(profileLink);
+
+    // Create a p that outputs the follower count
+    const followers = document.createElement('p');
+    followers.textContent(userData.data.followers);
+    cardInfoContainer.appendChild(followers);
+
+    // Create a p that outputs the following count
+    const following = document.createElement('p');
+    following.textContent(userData.data.following);
+    cardInfoContainer.appendChild(following);
+
+    // Create a p that outputs the users bio
+    const bio = document.createElement('p');
+    bio.textContent(userData.data.bio);
+    cardInfoContainer.appendChild(bio);
+
+    // Add cardInfoContainer to the card.
+    card.appendChild(cardInfoContainer);
+
+    return card;
+  }
+}
+
+
+
+
+
+
+
